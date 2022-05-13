@@ -1,0 +1,178 @@
+body {
+    background-color: #faf8ef;
+    color: #776e65;
+    font-family: "Clear Sans", "Helvetica Neue", Arial, sans-serif;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 auto;
+}
+
+.heading {
+    width: 45%;
+    margin: 30px 50px;
+    margin-bottom: 50px;
+    justify-content: center;
+    display: flex;
+    flex-direction: row;
+
+}
+
+h1 {
+    font-size: 100px;
+    text-align: center;
+}
+
+.interactbar {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.board {
+    width: 130px;
+    height: 80px;
+    background-color: #bbada0;
+    border-radius: 15px;
+    text-align: center;
+    line-height: 50px;
+    font-size: 30px;
+    font-weight: bold;
+    color: white;
+    margin-left: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.gamemap {
+    display: flex;
+    flex-direction: column;
+    border:7px solid #bbada0;
+    background-color: #bbada0;
+    border-radius: 8px;
+    margin: 0 auto;
+}
+
+.myrow{
+    display: flex;
+    flex-direction: row;
+}
+
+.mycell{
+    display:flex;
+    margin: 5px;
+    border:0px solid #bbada0;
+    border-radius: 5px;
+    background-color: #FAF0E6;
+}
+
+.mypiece{
+    width:80px;
+    height: 80px;
+    text-align: center;
+    line-height: auto;
+    font: 40px bolder;
+    font-weight: 1000;
+    color:#776e65;
+    border-radius: 5px !important;
+    border:1px;
+    transform-origin: center center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.bottom {
+    width: 45%;
+    margin: 50px auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.sizecontrol {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+input{
+    outline-style: none ;
+    background-color:#faf8ef;
+    color:#776e65;
+    border: 0px;
+    border-radius: 15px;
+    padding: 14px 14px;
+    padding-left: 0px;
+    padding-bottom: 5px;
+    width: 150px;
+    font-size: 20px;
+}
+
+.inputarea{
+    display: flex;
+    flex-direction: column;
+    color:#776e65;
+}
+
+.inputtitle{
+    border-top: 2px solid #776e65;
+    transition-duration: 0.15s;
+}
+
+.inputtitle2{
+    border-top: 4px solid #46403a;
+    font-size:20px;
+    font-weight: 400;
+    color:#46403a;
+    transition-duration: 0.15s;
+}
+
+.mybtn{
+    background: transparent; 
+    outline:0;
+    font-size: 20px;
+    font-weight:1000;
+    margin: 20px;
+    background-color: #edddcd;
+    color: rgb(105, 105, 105);
+    border-radius: 15px;
+    border: 2px solid #edddcd;
+    display: inline-block;
+    width: 150px;
+    height: 50px;
+    transition-duration: 0.5s;
+}
+
+.mybtn:hover{
+    background-color: rgb(105, 105, 105);
+    border:2px solid rgb(105, 105, 105);
+    color:rgb(230, 229, 229);
+}
+
+.buttonarea {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+@keyframes merge
+{
+    0% {transform: scale(1);}
+    50% {transform: scale(1.1);}
+    100% {transform: scale(1);}
+}
+
+@keyframes new
+{
+    0% {transform: scale(0);}
+    100% {transform: scale(1);}
+}
