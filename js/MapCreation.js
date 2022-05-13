@@ -3,9 +3,9 @@ var map=document.getElementsByClassName('gamemap'),rows=Array(row),cell=Array(ro
 var myscore=document.getElementById('score'),mytime=document.getElementById('time'),mybestscore=document.getElementById('bestscore');
 var bestscore;
 
-var randomEvent=0,randchance=0.5,eventType=0,eventCount=0,ex=-1,ey=-1;
+var randomEvent=0,randchance=0.3,eventCount=0,ex=-1,ey=-1;
 
-var history,maxlength=0;
+var history,maxlength=0,xhis,yhis,chis,rhis;
 
 if(localStorage.getItem('mybest')===null) {
     bestscore=0;
@@ -32,6 +32,53 @@ setInterval(function(){//计时器
     mytime.innerText= ("0" + min.toString()).slice(-2) + ':' + ("0" + sec.toString()).slice(-2);
 },1000);
 
+function create() {
+    history=new Array(1000);
+    xhis=new Array(1000);
+    yhis=new Array(1000);
+    chis=new Array(1000);
+    rhis=new Array(1000);
+    for(let i=0;i<1000;i++){
+        history[i]=new Array(row);
+        for(let j=0;j<row;j++){
+            history[i][j]=new Array(column);
+            
+        }
+    }
+    for(let j=0;j<row;j++)
+        for(let k=0;k<column;k++)
+                history[0][j][k]=mymap[j][k];
+    maxlength=1;
+    xhis[0]=ex;
+    yhis[0]=ey;
+    chis[0]=eventCount;
+    rhis[0]=randomEvent;
+}
+
+function pushversion() {
+    for(let i=0;i<row;i++)
+        for (let j=0;j<column;j++)
+            history[maxlength][i][j]=mymap[i][j];
+    xhis[maxlength]=ex;
+    yhis[maxlength]=ey;
+    chis[maxlength]=eventCount;
+    rhis[maxlength]=randomEvent;
+    maxlength+=1;
+
+}
+
+function popversion() {
+    maxlength-=1;
+    for(let i=0;i<row;i++)
+        for (let j=0;j<column;j++)
+            mymap[i][j]=history[maxlength][i][j];
+    ex=xhis[maxlength];
+    ey=yhis[maxlength];
+    eventCount=chis[maxlength];
+    randomEvent=rhis[maxlength];
+}
+
+
 function initialmap(){//重绘地图
     initialsize();
 
@@ -45,19 +92,9 @@ function initialmap(){//重绘地图
 
     newCell();
     newCell();
-    history=new Array(1000)
-    
     drawmap();
-    for(let i=0;i<1000;i++){
-        history[i]=new Array(row);
-        for(let j=0;j<row;j++){
-            history[i][j]=new Array(column);
-            for(let k=0;k<column;k++)
-                history[i][j][k]=mymap[j][k];
-        }
-    }
-    maxlength=1;
-
+    
+    create();
     score = 0;
     min = sec = 0;
     myscore.innerText= score.toString();
@@ -119,11 +156,8 @@ function createmap() {
 function withdraw() {
     if(maxlength<=1)
         return;
-    maxlength-=1
-    for(let i=0;i<row;i++)
-        for(let j=0;j<column;j++)
-            mymap[i][j]=history[maxlength-1][i][j];
-    drawmap()
+    popversion();
+    drawmap();
 }
 
 
@@ -194,7 +228,7 @@ function drawmap() { //根据mymap中的值绘制不同颜色
             }
         }
     }
-    console.log('history',history,'len=',history.length)
+    console.log('history',history,'len=',maxlength)
     console.log('mymap',mymap);
 }
 
@@ -241,12 +275,10 @@ document.onkeydown=function(event) {
             ex=myRand(row),ey=myRand(column);
         }
         if(Math.random()<0.5) {//生成黑色方块
-            eventType=1;
             eventCount=3;
             mymap[ex][ey]=-1;
         }
         else { //生成白色方块
-            eventType=2;
             eventCount=2;
             mymap[ex][ey]=-2;
         }
@@ -256,13 +288,12 @@ document.onkeydown=function(event) {
         if(eventCount===0) {
             mymap[ex][ey]=0;
             randomEvent=0;
+            ex=-1;
+            ey=-1;
         }
     }
     drawmap();
-    for(let i=0;i<row;i++)
-        for (let j=0;j<column;j++)
-            history[maxlength][i][j]=mymap[i][j];
-    maxlength+=1;
+    pushversion();
 }
 
 function mergeanimation(x, y) {
