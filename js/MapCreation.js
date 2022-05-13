@@ -3,9 +3,7 @@ var map=document.getElementsByClassName('gamemap'),rows=Array(row),cell=Array(ro
 var myscore=document.getElementById('score'),mytime=document.getElementById('time'),mybestscore=document.getElementById('bestscore');
 var bestscore;
 
-var randomEvent=0,randchance=0.3,eventCount=0,ex=-1,ey=-1;
-
-var history,maxlength=0,xhis,yhis,chis,rhis;
+var randomEvent=0,randchance=0.3,eventCount=0,ex=-1,ey=-1,maxlength=0;
 
 if(localStorage.getItem('mybest')===null) {
     bestscore=0;
@@ -32,50 +30,36 @@ setInterval(function(){//计时器
     mytime.innerText= ("0" + min.toString()).slice(-2) + ':' + ("0" + sec.toString()).slice(-2);
 },1000);
 
+
+
 function create() {
-    history=new Array(1000);
-    xhis=new Array(1000);
-    yhis=new Array(1000);
-    chis=new Array(1000);
-    rhis=new Array(1000);
-    for(let i=0;i<1000;i++){
-        history[i]=new Array(row);
-        for(let j=0;j<row;j++){
-            history[i][j]=new Array(column);
-            
-        }
+    let i=0;
+    while(localStorage.getItem('ver'+i.toString())!==null) {
+        localStorage.removeItem('ver'+i.toString())
+        i+=1;
     }
-    for(let j=0;j<row;j++)
-        for(let k=0;k<column;k++)
-                history[0][j][k]=mymap[j][k];
-    maxlength=1;
-    xhis[0]=ex;
-    yhis[0]=ey;
-    chis[0]=eventCount;
-    rhis[0]=randomEvent;
+    maxlength=0;
+    let pack={map:mymap,x:ex,y:ey,count:eventCount,rand:randomEvent};
+    localStorage.setItem('ver0',JSON.stringify(pack));
 }
 
 function pushversion() {
-    for(let i=0;i<row;i++)
-        for (let j=0;j<column;j++)
-            history[maxlength][i][j]=mymap[i][j];
-    xhis[maxlength]=ex;
-    yhis[maxlength]=ey;
-    chis[maxlength]=eventCount;
-    rhis[maxlength]=randomEvent;
     maxlength+=1;
-
+    let pack={map:mymap,x:ex,y:ey,count:eventCount,rand:randomEvent};
+    //console.log('push',Array.isArray(history));
+    localStorage.setItem('ver'+maxlength.toString(),JSON.stringify(pack));
 }
 
 function popversion() {
+    //console.log('ver'+maxlength.toString(),localStorage.getItem('ver'+maxlength.toString()))
+    localStorage.removeItem('ver'+maxlength.toString())
     maxlength-=1;
-    for(let i=0;i<row;i++)
-        for (let j=0;j<column;j++)
-            mymap[i][j]=history[maxlength][i][j];
-    ex=xhis[maxlength];
-    ey=yhis[maxlength];
-    eventCount=chis[maxlength];
-    randomEvent=rhis[maxlength];
+    let currentpack=JSON.parse(localStorage.getItem('ver'+maxlength.toString()));
+    mymap=currentpack.map;
+    ex=currentpack.x;
+    ey=currentpack.y;
+    eventCount=currentpack.count;
+    randomEvent=currentpack.rand;
 }
 
 
@@ -93,12 +77,12 @@ function initialmap(){//重绘地图
     newCell();
     newCell();
     drawmap();
-    
     create();
+
     score = 0;
     min = sec = 0;
     myscore.innerText= score.toString();
-    console.log(score,bestscore)
+    //console.log(score,bestscore)
     if(score>bestscore) {
         bestscore=score;
         localStorage.setItem('mybest',JSON.parse(bestscore));
@@ -154,7 +138,7 @@ function createmap() {
 }
 
 function withdraw() {
-    if(maxlength<=1)
+    if(maxlength<=0)
         return;
     popversion();
     drawmap();
@@ -228,8 +212,8 @@ function drawmap() { //根据mymap中的值绘制不同颜色
             }
         }
     }
-    console.log('history',history,'len=',maxlength)
-    console.log('mymap',mymap);
+    //console.log('history',history,'len=',history.length)
+    //console.log('mymap',mymap);
 }
 
 
