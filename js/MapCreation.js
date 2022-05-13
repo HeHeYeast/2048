@@ -4,6 +4,7 @@ var myscore=document.getElementById('score'),mytime=document.getElementById('tim
 var bestscore;
 
 var randomEvent=0,randchance=0.3,eventCount=0,ex=-1,ey=-1,maxlength=0;
+var speedupchance=0.1,weightupchance=0.1;
 
 if(localStorage.getItem('mybest')===null) {
     bestscore=0;
@@ -104,8 +105,10 @@ function initialsize() {
 function newCell() { //产生新格子
     let x=myRand(row), y=myRand(column);
     if (mymap[x][y] === 0)
-    {
+    {   
         mymap[x][y] = 2;
+        if(Math.random()<weightupchance)
+            mymap[x][y]=4;
         let piece = document.getElementById(x.toString() + y.toString() + 'piece');
         piece.style.animation = "new 0.3s linear";
         piece.addEventListener("animationend", function handler(){
@@ -263,7 +266,7 @@ document.onkeydown=function(event) {
             mymap[ex][ey]=-1;
         }
         else { //生成白色方块
-            eventCount=2;
+            eventCount=3;
             mymap[ex][ey]=-2;
         }
     }
@@ -355,6 +358,7 @@ function onUp(check) {
             else if(top===-2) {
                 if(bottom>0) {
                     mymap[j][c]=0;
+                    mergeanimation(i, c);
                     i+=1;
                     validMove=1;
                 }
@@ -399,6 +403,8 @@ function onUp(check) {
     }
     if (validMove) {
         newCell();
+        if(Math.random()<speedupchance)
+            newCell();
     }
 }
 
@@ -424,6 +430,7 @@ function onDown(check) {
             else if(bottom===-2) {
                 if(top>0) {
                     mymap[j][c]=0;
+                    mergeanimation(i, c);
                     i-=1;
                     validMove=1;
                 }
@@ -468,6 +475,8 @@ function onDown(check) {
     }
     if (validMove) {
         newCell();
+        if(Math.random()<speedupchance)
+            newCell();
     }
 }
 
@@ -493,6 +502,7 @@ function onLeft(check) {
             else if(left===-2) {
                 if(right>0) {
                     mymap[r][j]=0;
+                    mergeanimation(r, i);
                     i+=1;
                     validMove=1;
                 }
@@ -535,6 +545,8 @@ function onLeft(check) {
     }
     if (validMove) {
         newCell();
+        if(Math.random()<speedupchance)
+            newCell();
     }
 }
 
@@ -560,6 +572,7 @@ function onRight(check) {
             else if(right===-2) {
                 if(left>0) {
                     mymap[r][j]=0;
+                    mergeanimation(r, i);
                     i-=1;
                     validMove=1;
                 }
@@ -601,6 +614,8 @@ function onRight(check) {
     }
     if (validMove) {
         newCell();
+        if(Math.random()<speedupchance)
+            newCell();
     }
 }
 
