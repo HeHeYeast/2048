@@ -3,7 +3,9 @@ var map=document.getElementsByClassName('gamemap'),rows=Array(row),cell=Array(ro
 var myscore=document.getElementById('score'),mytime=document.getElementById('time'),mybestscore=document.getElementById('bestscore');
 var bestscore;
 
-var randomEvent=0,randchance=0.1,eventType=0,eventCount=0,ex=-1,ey=-1;
+var randomEvent=0,randchance=0.5,eventType=0,eventCount=0,ex=-1,ey=-1;
+
+var history,maxlength=0;
 
 if(localStorage.getItem('mybest')===null) {
     bestscore=0;
@@ -43,8 +45,18 @@ function initialmap(){//重绘地图
 
     newCell();
     newCell();
-
-    // drawmap();
+    history=new Array(1000)
+    
+    drawmap();
+    for(let i=0;i<1000;i++){
+        history[i]=new Array(row);
+        for(let j=0;j<row;j++){
+            history[i][j]=new Array(column);
+            for(let k=0;k<column;k++)
+                history[i][j][k]=mymap[j][k];
+        }
+    }
+    maxlength=1;
 
     score = 0;
     min = sec = 0;
@@ -62,14 +74,10 @@ function initialsize() {
     row = document.getElementById('row').value;
     column = document.getElementById('column').value;
 
-    if (row <= 0)
+    if (row <= 1)
         row = 5;
-    if (column <= 0)
+    if (column <= 1)
         column = 5;
-}
-
-function changesize() {
-    initialmap();
 }
 
 function newCell() { //产生新格子
@@ -82,7 +90,6 @@ function newCell() { //产生新格子
         piece.addEventListener("animationend", function handler(){
             piece.style.animation = '';
         });
-        drawmap();
     }
     else
         newCell();
@@ -107,7 +114,16 @@ function createmap() {
             cell[i][j].appendChild(piece);
         }
     }
-    drawmap();
+}
+
+function withdraw() {
+    if(maxlength<=1)
+        return;
+    maxlength-=1
+    for(let i=0;i<row;i++)
+        for(let j=0;j<column;j++)
+            mymap[i][j]=history[maxlength-1][i][j];
+    drawmap()
 }
 
 
@@ -178,6 +194,8 @@ function drawmap() { //根据mymap中的值绘制不同颜色
             }
         }
     }
+    console.log('history',history,'len=',history.length)
+    console.log('mymap',mymap);
 }
 
 
@@ -229,7 +247,7 @@ document.onkeydown=function(event) {
         }
         else { //生成白色方块
             eventType=2;
-            eventCount=1;
+            eventCount=2;
             mymap[ex][ey]=-2;
         }
     }
@@ -241,6 +259,10 @@ document.onkeydown=function(event) {
         }
     }
     drawmap();
+    for(let i=0;i<row;i++)
+        for (let j=0;j<column;j++)
+            history[maxlength][i][j]=mymap[i][j];
+    maxlength+=1;
 }
 
 function mergeanimation(x, y) {
